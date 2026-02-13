@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will You Be My Valentine? 💕</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <!-- Floating Hearts Background -->
+    <div class="hearts-container">
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+        <div class="heart"></div>
+    </div>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page active">
+        <div class="content-wrapper">
+            <h1 class="main-title">Will You Be My Valentine?</h1>
+            <div class="emoji-hearts">💕 💖 💗 💕</div>
+            <div class="button-container">
+                <button id="yesBtn" class="btn btn-yes">Yes! 💕</button>
+                <button id="noBtn" class="btn btn-no">No</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Yes Page -->
+    <div id="yesPage" class="page">
+        <div class="content-wrapper">
+            <h1 class="thank-you-title">Thank You 💖</h1>
+            <p class="thank-you-subtitle">for loving and supporting me</p>
+
+            <!-- Image Carousel -->
+            <div class="carousel-container">
+                <div class="carousel-frame">
+                    <img id="carouselImage" src="" alt="Our Memories">
+                </div>
+            </div>
+
+            <!-- Music Player -->
+            <div class="music-player">
+                <div class="music-info">
+                    <span id="songName">Loading music...</span>
+                </div>
+                <div class="music-controls">
+                    <button id="playPauseBtn" class="control-btn">⏸️</button>
+                    <button id="nextBtn" class="control-btn">⏭️</button>
+                </div>
+                <audio id="audioPlayer"></audio>
+            </div>
+
+            <!-- Closing Message -->
+            <div class="closing-message">
+                <p>With Love - Sahasrabda. 💕</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
