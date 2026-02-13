@@ -31,6 +31,17 @@ let shuffledImages = []; // Holds the current shuffled order
 let activeImg = carouselImage1;
 let inactiveImg = carouselImage2;
 
+// "No" button options
+let noClickCount = 0;
+const noTexts = [
+    "No",
+    "Please",
+    "Please my love",
+    "Please please please",
+    "Aar ragabona please",
+    "Ami khub valo bashi toke"
+];
+
 // Fisher-Yates shuffle algorithm to randomize array
 function shuffleArray(array) {
     const shuffled = [...array];
@@ -97,10 +108,7 @@ async function startCarousel() {
 
         // Ensure next image is preloaded
         try {
-            // We start preloading slightly before the transition or just await it if it's not ready
-            // For a truly smooth transition, we await here. If it's cached, it's instant.
             await preloadImage(nextImageUrl);
-
             // Swap images
             inactiveImg.src = nextImageUrl;
 
