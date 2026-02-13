@@ -22,24 +22,10 @@ let noClickCount = 0;
 
 // Image and Song arrays - using actual filenames from folders
 let images = [
-    'Pics/1000243757.jpg',
-    'Pics/IMG-20231019-WA0009.jpg',
-    'Pics/IMG-20231220-WA0010.jpg',
-    'Pics/IMG-20240930-WA0019 (3).jpg',
-    'Pics/IMG-20241225-WA0056.jpg',
-    'Pics/IMG-20241226-WA0005.jpg',
-    'Pics/IMG-20260123-WA0122.jpg',
-    'Pics/IMG20231021120102.jpg',
-    'Pics/IMG20231021132724.jpg',
-    'Pics/IMG20241009140108.jpg',
-    'Pics/IMG_20230709_145023.jpg',
-    'Pics/IMG_20250304_230048.jpg',
-    'Pics/IMG_20250330_151854.jpg',
-    'Pics/IMG_20250914_125258.jpg',
-    'Pics/IMG_20250914_130207.jpg',
-    'Pics/IMG_20260123_225730.jpg',
-    'Pics/IMG_20260213_213332.jpg',
-    'Pics/Screenshot_2024-12-22-17-39-08-10_6012fa4d4ddec268fc5c7112cbb265e7.jpg'
+    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
+    '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
+    '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
+    '31', '32', '33', '34', '35', '36', '37'
 ];
 
 let songs = [
@@ -51,6 +37,8 @@ let songs = [
 let currentImageIndex = 0;
 let currentSongIndex = 0;
 let imageInterval;
+let shuffledImages = []; // Holds the current shuffled order
+let shownImagesCount = 0; // Tracks how many images shown in current cycle
 
 // Fisher-Yates shuffle algorithm to randomize array
 function shuffleArray(array) {
@@ -64,8 +52,8 @@ function shuffleArray(array) {
 
 // No need for async loading functions anymore since we have the filenames
 function loadImages() {
-    // Shuffle images for random order
-    images = shuffleArray(images);
+    // Initialize the shuffled images array
+    shuffledImages = shuffleArray(images);
     return Promise.resolve();
 }
 
@@ -84,12 +72,21 @@ function startCarousel() {
     if (images.length === 0) return;
 
     currentImageIndex = 0;
-    carouselImage.src = images[currentImageIndex];
+    shownImagesCount = 0;
+    carouselImage.src = shuffledImages[currentImageIndex];
 
     // Change image every 3 seconds
     imageInterval = setInterval(() => {
-        currentImageIndex = (currentImageIndex + 1) % images.length;
-        carouselImage.src = images[currentImageIndex];
+        currentImageIndex++;
+        shownImagesCount++;
+
+        // If we've shown all images, reshuffle for next cycle
+        if (currentImageIndex >= shuffledImages.length) {
+            shuffledImages = shuffleArray(images);
+            currentImageIndex = 0;
+        }
+
+        carouselImage.src = shuffledImages[currentImageIndex];
     }, 3000);
 }
 
