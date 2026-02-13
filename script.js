@@ -4,6 +4,8 @@ const yesPage = document.getElementById('yesPage');
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
 const imageLoader = document.getElementById('imageLoader');
+const carouselImage1 = document.getElementById('carouselImage1');
+const carouselImage2 = document.getElementById('carouselImage2');
 
 // Image and Song arrays - using actual filenames from folders
 let images = [
@@ -26,7 +28,8 @@ let currentImageIndex = 0;
 let currentSongIndex = 0;
 let imageInterval;
 let shuffledImages = []; // Holds the current shuffled order
-let shownImagesCount = 0; // Tracks how many images shown in current cycle
+let activeImg = carouselImage1;
+let inactiveImg = carouselImage2;
 
 // Fisher-Yates shuffle algorithm to randomize array
 function shuffleArray(array) {
@@ -49,31 +52,24 @@ function preloadImage(url) {
 }
 
 function loadImages() {
-    // Initialize the shuffled images array
     shuffledImages = shuffleArray(images);
-    // Preload the first image before starting
-    showLoader();
     return preloadImage(shuffledImages[0]);
 }
 
 function loadSongs() {
-    // Songs are already defined above
     return Promise.resolve();
 }
 
-// Get song name from path
 function getSongName(path) {
     return path.split('/').pop().replace(/\.[^/.]+$/, '');
 }
 
 function showLoader() {
     imageLoader.classList.add('active');
-    carouselImage.classList.remove('loaded');
 }
 
 function hideLoader() {
     imageLoader.classList.remove('active');
-    carouselImage.classList.add('loaded');
 }
 
 // Initialize carousel
@@ -81,46 +77,52 @@ async function startCarousel() {
     if (images.length === 0) return;
 
     currentImageIndex = 0;
-    shownImagesCount = 0;
+    activeImg = carouselImage1;
+    inactiveImg = carouselImage2;
 
-    // Set initial image and hide loader
-    carouselImage.src = shuffledImages[currentImageIndex];
+    // Set initial image
+    activeImg.src = shuffledImages[currentImageIndex];
+    activeImg.classList.add('active');
+    inactiveImg.classList.remove('active');
     hideLoader();
 
-    // Change image every 3 seconds
+    // Change image every 4 seconds
     imageInterval = setInterval(async () => {
         let nextIndex = (currentImageIndex + 1) % shuffledImages.length;
-
-        // If we've shown all images in this shuffle, reshuffle for next cycle
         if (nextIndex === 0) {
             shuffledImages = shuffleArray(images);
         }
 
         const nextImageUrl = shuffledImages[nextIndex];
 
-        // Start preloading the next image in the background
-        preloadImage(nextImageUrl).then(() => {
-            // Once preloaded, if we are still on the same interval, update UI
-            // (The interval logic below actually handles the timing)
-        });
-
-        // Move to next image
-        currentImageIndex = nextIndex;
-        shownImagesCount++;
-
-        // Show loading state if it takes time
-        showLoader();
-
+        // Ensure next image is preloaded
         try {
-            await preloadImage(shuffledImages[currentImageIndex]);
-            carouselImage.src = shuffledImages[currentImageIndex];
+            // We start preloading slightly before the transition or just await it if it's not ready
+            // For a truly smooth transition, we await here. If it's cached, it's instant.
+            await preloadImage(nextImageUrl);
+
+            // Swap images
+            inactiveImg.src = nextImageUrl;
+
+            // Trigger cross-fade
+            activeImg.classList.remove('active');
+            activeImg.classList.add('fading');
+
+            inactiveImg.classList.add('active');
+            inactiveImg.classList.remove('fading');
+
+            // Swap roles
+            const temp = activeImg;
+            activeImg = inactiveImg;
+            inactiveImg = temp;
+
+            currentImageIndex = nextIndex;
             hideLoader();
         } catch (err) {
-            console.error('Failed to load image:', shuffledImages[currentImageIndex]);
-            // Still try to move to the next one
-            hideLoader();
+            console.error('Failed to load image:', nextImageUrl);
+            // If it fails, we just stay on current image and try next one in next interval
         }
-    }, 4000); // Increased to 4s to give more time for preloading/viewing
+    }, 4000);
 }
 
 // Initialize music player

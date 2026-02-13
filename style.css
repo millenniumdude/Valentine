@@ -231,8 +231,10 @@ body {
     font-size: clamp(2rem, 8vw, 4rem);
     color: #fff;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-    margin-top: 40px;
-    margin-bottom: 15px;
+    margin-top: 20px;
+    /* Reduced from 40px */
+    margin-bottom: 10px;
+    /* Reduced from 15px */
     line-height: 1.2;
 }
 
@@ -241,7 +243,8 @@ body {
     font-size: clamp(1rem, 4vw, 1.3rem);
     color: rgba(255, 255, 255, 0.95);
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
+    /* Reduced from 30px */
     font-weight: 300;
 }
 
@@ -254,10 +257,14 @@ body {
 .carousel-frame {
     position: relative;
     background: linear-gradient(135deg, #fff 0%, #ffe6f0 100%);
-    padding: 20px;
+    padding: 15px;
     border-radius: 40px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
     overflow: hidden;
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .carousel-frame::before {
@@ -278,19 +285,29 @@ body {
     z-index: 2;
 }
 
-#carouselImage {
-    width: 100%;
-    height: auto;
-    max-height: 400px;
+.carousel-img {
+    width: calc(100% - 30px);
+    height: calc(100% - 30px);
     object-fit: contain;
     border-radius: 25px;
     display: block;
     opacity: 0;
-    transition: opacity 0.5s ease;
+    transition: opacity 1.5s ease-in-out;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) translateZ(0);
+    will-change: opacity;
 }
 
-#carouselImage.loaded {
+.carousel-img.active {
     opacity: 1;
+    z-index: 1;
+}
+
+.carousel-img.fading {
+    opacity: 0;
+    z-index: 0;
 }
 
 /* Loader Styles */
@@ -406,11 +423,13 @@ body {
     }
 
     .carousel-frame {
-        padding: 15px;
+        padding: 10px;
+        height: 300px;
     }
 
-    #carouselImage {
-        max-height: 300px;
+    .carousel-img {
+        width: calc(100% - 20px);
+        height: calc(100% - 20px);
     }
 
     .music-player {
