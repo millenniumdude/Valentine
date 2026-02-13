@@ -3,22 +3,7 @@ const homePage = document.getElementById('homePage');
 const yesPage = document.getElementById('yesPage');
 const yesBtn = document.getElementById('yesBtn');
 const noBtn = document.getElementById('noBtn');
-const carouselImage = document.getElementById('carouselImage');
-const audioPlayer = document.getElementById('audioPlayer');
-const playPauseBtn = document.getElementById('playPauseBtn');
-const nextBtn = document.getElementById('nextBtn');
-const songName = document.getElementById('songName');
-
-// "No" button text progression
-const noTexts = [
-    'No',
-    'Please',
-    'Please my love',
-    'Please please please',
-    'Aar ragabona please',
-    'Ami khub valo bashi toke'
-];
-let noClickCount = 0;
+const imageLoader = document.getElementById('imageLoader');
 
 // Image and Song arrays - using actual filenames from folders
 let images = [
@@ -53,11 +38,22 @@ function shuffleArray(array) {
     return shuffled;
 }
 
-// No need for async loading functions anymore since we have the filenames
+// Helper to preload a single image
+function preloadImage(url) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.src = url;
+        img.onload = () => resolve(url);
+        img.onerror = () => reject(url);
+    });
+}
+
 function loadImages() {
     // Initialize the shuffled images array
     shuffledImages = shuffleArray(images);
-    return Promise.resolve();
+    // Preload the first image before starting
+    showLoader();
+    return preloadImage(shuffledImages[0]);
 }
 
 function loadSongs() {
@@ -70,27 +66,61 @@ function getSongName(path) {
     return path.split('/').pop().replace(/\.[^/.]+$/, '');
 }
 
+function showLoader() {
+    imageLoader.classList.add('active');
+    carouselImage.classList.remove('loaded');
+}
+
+function hideLoader() {
+    imageLoader.classList.remove('active');
+    carouselImage.classList.add('loaded');
+}
+
 // Initialize carousel
-function startCarousel() {
+async function startCarousel() {
     if (images.length === 0) return;
 
     currentImageIndex = 0;
     shownImagesCount = 0;
+
+    // Set initial image and hide loader
     carouselImage.src = shuffledImages[currentImageIndex];
+    hideLoader();
 
     // Change image every 3 seconds
-    imageInterval = setInterval(() => {
-        currentImageIndex++;
-        shownImagesCount++;
+    imageInterval = setInterval(async () => {
+        let nextIndex = (currentImageIndex + 1) % shuffledImages.length;
 
-        // If we've shown all images, reshuffle for next cycle
-        if (currentImageIndex >= shuffledImages.length) {
+        // If we've shown all images in this shuffle, reshuffle for next cycle
+        if (nextIndex === 0) {
             shuffledImages = shuffleArray(images);
-            currentImageIndex = 0;
         }
 
-        carouselImage.src = shuffledImages[currentImageIndex];
-    }, 3000);
+        const nextImageUrl = shuffledImages[nextIndex];
+
+        // Start preloading the next image in the background
+        preloadImage(nextImageUrl).then(() => {
+            // Once preloaded, if we are still on the same interval, update UI
+            // (The interval logic below actually handles the timing)
+        });
+
+        // Move to next image
+        currentImageIndex = nextIndex;
+        shownImagesCount++;
+
+        // Show loading state if it takes time
+        showLoader();
+
+        try {
+            await preloadImage(shuffledImages[currentImageIndex]);
+            carouselImage.src = shuffledImages[currentImageIndex];
+            hideLoader();
+        } catch (err) {
+            console.error('Failed to load image:', shuffledImages[currentImageIndex]);
+            // Still try to move to the next one
+            hideLoader();
+        }
+    }, 4000); // Increased to 4s to give more time for preloading/viewing
 }
 
 // Initialize music player
