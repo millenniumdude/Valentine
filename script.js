@@ -22,10 +22,13 @@ let noClickCount = 0;
 
 // Image and Song arrays - using actual filenames from folders
 let images = [
-    '1', '2', '3', '4', '5', '6', '7', '8', '9', '10',
-    '11', '12', '13', '14', '15', '16', '17', '18', '19', '20',
-    '21', '22', '23', '24', '25', '26', '27', '28', '29', '30',
-    '31', '32', '33', '34', '35', '36', '37'
+    'Pics/1.jpg', 'Pics/2.jpg', 'Pics/3.jpg', 'Pics/4.jpg', 'Pics/5.jpg',
+    'Pics/6.jpg', 'Pics/7.jpg', 'Pics/8.jpg', 'Pics/9.jpg', 'Pics/10.jpg',
+    'Pics/11.jpg', 'Pics/12.jpg', 'Pics/13.jpg', 'Pics/14.jpg', 'Pics/15.jpg',
+    'Pics/16.jpg', 'Pics/17.jpg', 'Pics/18.jpg', 'Pics/19.jpg', 'Pics/20.jpg',
+    'Pics/21.jpg', 'Pics/22.jpg', 'Pics/23.jpg', 'Pics/24.jpg', 'Pics/25.jpg',
+    'Pics/26.jpg', 'Pics/27.jpg', 'Pics/28.jpg', 'Pics/29.jpg', 'Pics/30.jpg',
+    'Pics/31.jpg', 'Pics/32.jpg', 'Pics/33.jpg', 'Pics/34.jpg', 'Pics/37.jpg'
 ];
 
 let songs = [
